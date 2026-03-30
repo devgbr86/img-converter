@@ -1,22 +1,22 @@
-import { store }                          from './core/store.js'
+import { store }                          from './store.js'
 import { loadImage, convertImage,
-         generateThumbnail }              from './core/imageService.js'
+         generateThumbnail }              from './utils/imageService.js'
 import { createThumb, updateDownloadLink,
          setThumbSrc }                    from './ui/thumb.js'
 import { initDropzone }                   from './ui/dropzone.js'
 import { initControls }                   from './ui/controls.js'
 
-const thumbs      = document.getElementById('thumbs')
+const thumbs       = document.getElementById('thumbs')
 const formatSelect = document.getElementById('format')
 
 async function handleFiles(fileList) {
   for (const f of fileList) {
     const entry = {
-      id:             crypto.randomUUID(),
-      file:           f,
-      imageBitmap:    null,
-      convertedBlob:  null,
-      outputName:     null
+      id:            crypto.randomUUID(),
+      file:          f,
+      imageBitmap:   null,
+      convertedBlob: null,
+      outputName:    null
     }
 
     store.add(entry)
@@ -41,9 +41,9 @@ async function convertSingle(entry) {
   const blob = await convertImage(entry.imageBitmap, formatSelect.value, 1.0)
   if (!blob) return alert('Erro na conversão')
 
-  const ext            = formatSelect.value.split('/')[1]
-  entry.convertedBlob  = blob
-  entry.outputName     = entry.file.name.replace(/\.[^/.]+$/, '') + '.' + ext
+  const ext           = formatSelect.value.split('/')[1]
+  entry.convertedBlob = blob
+  entry.outputName    = entry.file.name.replace(/\.[^/.]+$/, '') + '.' + ext
 
   updateDownloadLink(entry)
 }
