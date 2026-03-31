@@ -1,6 +1,6 @@
-import { store }                          from './store.js'
+import { store }                          from './store/store.js'
 import { loadImage, convertImage,
-         generateThumbnail }              from './utils/imageService.js'
+         generateThumbnail }              from './services/imageService.js'
 import { createThumb, updateDownloadLink,
          setThumbSrc }                    from './ui/thumb.js'
 import { initDropzone }                   from './ui/dropzone.js'

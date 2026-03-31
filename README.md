@@ -1,73 +1,75 @@
-# 🖼️ Conversor de Imagens (PNG / JPG / WebP) — 100% Client-Side
+# img-converter
 
-Conversor simples e rápido feito em **HTML, CSS e JavaScript puro**, que permite **converter imagens entre PNG, JPG e WebP diretamente no navegador**, sem necessidade de backend ou upload para servidores.
-
----
-
-## 🚀 Funcionalidades
-
-* ✅ Conversão **totalmente local (client-side)** — privacidade total.
-* ✅ Suporte a **PNG**, **JPG** e **WebP**.
-* ✅ Conversão individual ou em lote (“Converter Todas”).
-* ✅ **Download automático** das imagens convertidas.
-* ✅ Interface responsiva e moderna.
-* ✅ Pré-visualização em miniaturas (thumbnails).
-* ✅ Compatível com navegadores modernos (Chrome, Edge, Firefox, Safari 14+).
+Conversor de imagens client-side entre PNG, JPG e WebP.
+Sem backend, sem upload, sem dependências externas.
 
 ---
 
-## 🧠 Tecnologias utilizadas
+## Como funciona
 
-* **HTML5**
-* **CSS3**
-* **JavaScript (ES6)**
-* API nativa:
-
-  * [`<canvas>`](https://developer.mozilla.org/pt-BR/docs/Web/API/Canvas_API)
-  * [`toBlob()`](https://developer.mozilla.org/pt-BR/docs/Web/API/HTMLCanvasElement/toBlob)
-  * [`createImageBitmap()`](https://developer.mozilla.org/pt-BR/docs/Web/API/WindowOrWorkerGlobalScope/createImageBitmap)
+O arquivo é lido via `createImageBitmap()`, renderizado em um `<canvas>` e exportado no formato escolhido através de `canvas.toBlob()`. Todo o processamento ocorre no navegador.
 
 ---
 
-## 📦 Como usar
+## Uso
 
-1. Baixe ou clone este repositório:
+```
+git clone https://github.com/devgbr86/img-converter.git
+cd img-converter
+```
 
-   ```bash
-   git clone https://github.com/seuusuario/conversor-imagens.git
-   cd conversor-imagens
-   ```
-2. Abra o arquivo `index.html` em qualquer navegador moderno.
-3. Clique em **Selecionar Arquivos** ou arraste as imagens para a área indicada.
-4. Escolha o formato desejado (PNG, JPG ou WebP).
-5. Clique em **Converter Todas** ou converta individualmente.
-6. Faça o download dos arquivos convertidos.
+Abra `index.html` diretamente no navegador. Nenhum servidor ou build necessário.
 
----
-
-## ⚙️ Como funciona
-
-O script lê cada imagem com `createImageBitmap()`, renderiza em um `<canvas>` e exporta para o formato selecionado via `canvas.toBlob()`.
-Tudo acontece no navegador, garantindo **zero upload** e **máxima privacidade**.
+1. Selecione arquivos pelo botão ou arraste para a área de drop
+2. Escolha o formato de saída (PNG, JPG ou WebP)
+3. Converta individualmente ou use "Converter Todas"
+4. Baixe os arquivos convertidos
 
 ---
 
-## 🧾 Observações
+## Arquitetura
 
-* Metadados EXIF **não são preservados**.
-* A conversão usa **qualidade máxima (1.0)** por padrão.
-* WebP pode não ser suportado em navegadores antigos.
+```
+src/
+  main.js              — orquestrador, ponto de entrada
+  store/
+    store.js           — estado global das imagens carregadas
+  services/
+    imageService.js    — loadImage, convertImage, generateThumbnail
+  ui/
+    dropzone.js        — captura de arquivos (input + drag and drop)
+    controls.js        — botões de ação global
+    thumb.js           — criação e atualização dos cards de preview
+  utils/
+    escapeHtml.js      — sanitização de strings para o DOM
+  styles/
+    main.css           — estilos globais
+```
+
+A separação entre `services/` e `utils/` é intencional: `services/` contém lógica de domínio da aplicação (conversão de imagem), `utils/` contém apenas funções puras sem contexto de negócio.
 
 ---
 
-## 📄 Licença
+## Tecnologias
 
-Código sob licença **MIT** — uso livre para fins pessoais e comerciais.
+- HTML5, CSS3, JavaScript ES6 (módulos nativos)
+- Canvas API — `createImageBitmap()`, `toBlob()`
+- `URL.createObjectURL()` com `revokeObjectURL()` para evitar memory leak
+
+---
+
+## Observações
+
+- Metadados EXIF não são preservados na conversão
+- Qualidade de saída padrão: 1.0 (máxima)
+- WebP requer navegadores modernos (Chrome 32+, Firefox 65+, Safari 14+)
 
 ---
 
-## 👨‍💻 Autor
+## Licença
 
-Criado por [**codemaps**](https://codemaps.pages.dev) — 2025.
+MIT — uso livre para fins pessoais e comerciais.
 
 ---
+
+Criado por [devgbr86](https://github.com/devgbr86) — 2025.

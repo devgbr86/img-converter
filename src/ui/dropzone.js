@@ -1,5 +1,5 @@
 export function initDropzone(onFiles) {
-  const drop = document.getElementById('drop')
+  const drop      = document.getElementById('drop')
   const fileInput = document.getElementById('file')
 
   fileInput.addEventListener('change', async (e) => {
@@ -22,7 +22,8 @@ export function initDropzone(onFiles) {
   })
 
   drop.addEventListener('drop', async (e) => {
-    const files = Array.from(e.dataTransfer?.files ?? []).filter(f => f.type.startsWith('image/'))
+    const files = Array.from(e.dataTransfer?.files ?? [])
+      .filter(f => f.type.startsWith('image/'))
     if (files.length) await onFiles(files)
   })
 }
