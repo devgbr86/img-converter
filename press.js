@@ -1,4 +1,4 @@
-const ImageService = (() => {
+const Press = (() => {
   const OUTPUT_FORMAT = "image/jpeg";
 
   async function loadImage(file) {

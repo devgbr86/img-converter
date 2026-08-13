@@ -1,84 +1,50 @@
-# jpg-press
+# JPGpress
 
-Ferramenta client-side para conversão e compressão de imagens. Aceita PNG, WebP e outros formatos como entrada e gera arquivos JPG otimizados, com redução perceptível de tamanho.
-
-Sem backend, sem upload, sem dependências externas.
-
----
+Conversor de imagens (PNG, WebP, qualquer formato suportado pelo navegador) para JPG comprimido. 100% client-side — nada é enviado para servidor.
 
 ## Como funciona
 
-O arquivo é lido via `createImageBitmap()`, desenhado em um `<canvas>` sobre um fundo branco (JPG não tem canal alpha) e exportado como JPG através de `canvas.toBlob()`, com qualidade fixa em 80%. Todo o processamento ocorre no navegador.
+1. Selecione ou arraste imagens.
+2. Cada imagem gera uma miniatura via `createImageBitmap` + `<canvas>`.
+3. "Prensar" desenha a imagem num canvas com fundo branco (evita transparência virando preto) e exporta via `canvas.toBlob('image/jpeg', 0.8)`.
+4. Baixe individualmente ou tudo de uma vez.
 
----
+## Stack
 
-## Uso
+- Vanilla JS, sem build step, sem dependências.
+- Fontes: Space Mono (mono) + DM Sans (sans), via Google Fonts.
 
-```
-git clone https://github.com/devgbr86/jpg-press.git
-cd jpg-press
-```
-
-Abra `index.html` diretamente no navegador. Nenhum servidor ou build necessário.
-
-1. Selecione arquivos pelo botão ou arraste para a área de drop
-2. Converta individualmente ou use "Prensar Todas"
-3. Cada card exibe o tamanho original e o tamanho final, com o percentual de redução
-4. Baixe os arquivos convertidos
-
----
-
-## Arquitetura
+## Estrutura
 
 ```
-index.html          — estrutura da página, carrega os scripts em ordem
-style.css            — estilos globais
-js/
-├── utils.js         — escapeHtml, formatBytes, reductionPercent
-├── store.js         — estado global das imagens carregadas
-├── imageService.js  — loadImage, convertToJpg, generateThumbnail
-├── ui.js            — thumbs, dropzone, controles
-└── main.js          — orquestrador, ponto de entrada
+index.html   markup + import dos scripts
+style.css    tema dark, grid de thumbs
+store.js     Store — estado dos arquivos (add/remove/getAll/getPending/getConverted)
+press.js     Press — loadImage, convertToJpg, generateThumbnail (toda lógica de canvas)
+ui.js        UI — render de thumbs, dropzone, controles, helpers de formatação
+main.js      orquestração — liga Store + Press + UI, define QUALITY
 ```
 
-A separação entre `imageService.js` e `utils.js` é intencional: o primeiro contém lógica de domínio (conversão e compressão de imagem), o segundo só funções puras sem contexto de negócio.
+Padrão: cada módulo é uma IIFE que expõe um objeto global (`Store`, `Press`, `UI`), sem imports/bundler.
 
-Os arquivos são scripts comuns (não ES modules) carregados em ordem via `<script>`, cada um expondo um namespace global (`Utils`, `Store`, `ImageService`, `UI`). Isso é proposital: módulos ES bloqueiam via CORS quando o HTML é aberto direto do disco (`file://`), então essa estrutura garante que o projeto funcione só com duplo-clique no `index.html`, sem precisar de servidor local.
+## Qualidade de compressão
 
-A ordem de carregamento no `index.html` importa — cada script espera que o anterior já tenha rodado:
+Fixa em `0.8` (constante `QUALITY` em `main.js`). Sem controle na UI — ajustar direto no código se precisar de outro valor.
 
-```html
-<script src="./js/utils.js"></script>
-<script src="./js/store.js"></script>
-<script src="./js/imageService.js"></script>
-<script src="./js/ui.js"></script>
-<script src="./js/main.js"></script>
+## Limitações conhecidas
+
+- Object URLs de conversões repetidas da mesma imagem não são revogados (leak leve se reconverter várias vezes).
+- Sem validação de tipo no drag-and-drop — arquivo não suportado pelo navegador falha silenciosamente (só loga no console).
+- `onConvertAll` reprocessa imagens já convertidas.
+
+## Rodando local
+
+Sem build. Basta servir os arquivos estáticos:
+
+```bash
+npx serve .
 ```
-
-`main.js` é o último porque ele é quem consome `Store`, `ImageService` e `UI` — se rodar antes deles, a página carrega sem erro visível, mas nenhum clique ou drop funciona.
-
----
-
-## Tecnologias
-
-- HTML5, CSS3, JavaScript ES6, scripts globais (sem `import`/`export`, funciona via `file://`)
-- Canvas API — `createImageBitmap()`, `toBlob()`
-- `URL.createObjectURL()` com `revokeObjectURL()` para evitar memory leak
-
----
-
-## Observações
-
-- Formato de saída é sempre JPG — essa é a única coisa que a ferramenta faz, de propósito
-- Transparência de PNG/WebP vira fundo branco na conversão
-- Metadados EXIF não são preservados
-- Qualidade fixa em 80%
-
----
 
 ## Licença
 
-MIT — uso livre para fins pessoais e comerciais.
-
----
-
+MIT

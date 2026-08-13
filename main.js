@@ -18,11 +18,8 @@
       );
 
       try {
-        entry.imageBitmap = await ImageService.loadImage(f);
-        UI.setThumbSrc(
-          entry,
-          ImageService.generateThumbnail(entry.imageBitmap),
-        );
+        entry.imageBitmap = await Press.loadImage(f);
+        UI.setThumbSrc(entry, Press.generateThumbnail(entry.imageBitmap));
       } catch (err) {
         console.error("Erro ao carregar imagem:", err);
       }
@@ -36,7 +33,7 @@
   async function convertSingle(entry) {
     if (!entry.imageBitmap) return alert("Imagem não pronta");
 
-    const blob = await ImageService.convertToJpg(entry.imageBitmap, QUALITY);
+    const blob = await Press.convertToJpg(entry.imageBitmap, QUALITY);
     if (!blob) return alert("Erro na conversão");
 
     entry.convertedBlob = blob;
