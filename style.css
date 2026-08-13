@@ -20,8 +20,8 @@
      --danger: #ff4d4d;
      --good: #6be675;
      --radius: 4px;
-     --mono: 'Space Mono', monospace;
-     --sans: 'DM Sans', sans-serif;
+     --mono: ui-monospace, "SF Mono", "Cascadia Mono", "Consolas", "DejaVu Sans Mono", monospace;
+     --sans: Helvetica, "Helvetica Neue", Arial, sans-serif;
 }
 
 html {
